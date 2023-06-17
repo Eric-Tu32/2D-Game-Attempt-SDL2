@@ -1,5 +1,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <math.h>
 
 #include "Player.hpp"
 
@@ -32,10 +33,11 @@ void Player::setDirection(float x, float y)
 	direction.y = y;
 }
 
-void Player::update(double deltaTime, bool left_button_down, bool right_button_down, bool up_button_down, bool down_button_down)
+void Player::update(double deltaTime, bool left_button_down, bool right_button_down, bool up_button_down, bool down_button_down, bool left_mouse_down, bool right_mouse_down, Vector2f player_to_mouse)
 {
 	direction.x = 0;
 	direction.y = 0;
+	setAngle((atan2(player_to_mouse.x ,-player_to_mouse.y) * 180.0d) / 3.1416d);
 
 	if (left_button_down)
 	{
@@ -57,6 +59,18 @@ void Player::update(double deltaTime, bool left_button_down, bool right_button_d
 	{
 		direction.x = (float) direction.x / 1.414f;
 		direction.y = (float) direction.y / 1.414f;
+	}
+
+	if (left_mouse_down)
+	{
+		direction.x = (float) direction.x / 2.0f;
+		direction.y = (float) direction.y / 2.0f;
+	}
+
+	if (right_mouse_down)
+	{
+		direction.x = (float) direction.x / 2.0f;
+		direction.y = (float) direction.y / 2.0f;
 	}
 
 	Vector2f newPos;

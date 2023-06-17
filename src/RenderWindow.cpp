@@ -36,6 +36,7 @@ void RenderWindow::clear()
 void RenderWindow::render(Entity& p_entity)
 {
 	SDL_Rect src; 
+
 	src.x = p_entity.getCurrentFrame().x;
 	src.y = p_entity.getCurrentFrame().y;
 	src.w = p_entity.getCurrentFrame().w;
@@ -47,12 +48,26 @@ void RenderWindow::render(Entity& p_entity)
 	dst.w = p_entity.getCurrentFrame().w* p_entity.getScale();
 	dst.h = p_entity.getCurrentFrame().h* p_entity.getScale();
 
-	SDL_RenderCopy(renderer, p_entity.getTex(), &src, &dst);
+	SDL_RendererFlip flip = SDL_FLIP_NONE;
+
+	SDL_RenderCopyEx(renderer, p_entity.getTex(), &src, &dst, p_entity.getAngle(), NULL, flip);
+	//SDL_RenderCopyEx(renderer, p_entity.getTex(), &src, &dst, 0, NULL, flip);
 }
 
-void RenderWindow::render(SDL_Texture* p_tex)
-{
-	SDL_RenderCopy(renderer, p_tex, NULL, NULL);
+void RenderWindow::render(int p_x, int p_y, SDL_Texture* p_tex)
+{	
+    SDL_Point size;
+    SDL_QueryTexture(p_tex, NULL, NULL, &size.x, &size.y);
+
+	SDL_Rect dst;
+	dst.x = p_x;
+	dst.y = p_y;
+	//dst.w = size.x;
+	//dst.h = size.y;
+	dst.w = 1280;
+	dst.h = 720;
+
+	SDL_RenderCopy(renderer, p_tex, NULL, &dst);
 }
 
 void RenderWindow::display()

@@ -13,11 +13,14 @@ public:
 		return pos;
 	}
 	void setPos(float x, float y);
+	double getAngle();
+	void setAngle(double x);
 	SDL_Texture* getTex();
 	SDL_Rect getCurrentFrame();
 	float getScale();
 private:
 	Vector2f pos;
+	double angle;
 	SDL_Rect currentFrame;
 	SDL_Texture* tex;
 	float scale;
