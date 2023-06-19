@@ -1,6 +1,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <math.h>
+#include <chrono>
 
 #include "Player.hpp"
 
@@ -8,6 +9,7 @@ Player::Player(Vector2f p_pos, SDL_Texture* p_tex, float p_scale, float p_veloci
 :Entity(p_pos, p_tex, p_scale)
 {
 	velocity = p_velocity;
+	sprint_available = true;
 	direction.x = 0.0f;
 	direction.y = 0.0f;
 }
@@ -39,6 +41,8 @@ void Player::update(double deltaTime, bool left_button_down, bool right_button_d
 	direction.y = 0;
 	setAngle((atan2(player_to_mouse.x ,-player_to_mouse.y) * 180.0d) / 3.1416d);
 
+	Vector2f newPos;
+
 	if (left_button_down)
 	{
 		direction.x -= 1;
@@ -62,9 +66,22 @@ void Player::update(double deltaTime, bool left_button_down, bool right_button_d
 	}
 
 	if (left_mouse_down)
-	{
-		direction.x = (float) direction.x / 2.0f;
-		direction.y = (float) direction.y / 2.0f;
+	{	
+		current_timestamp = std::chrono::steady_clock::now();
+		if (sprint_available)
+		{
+			sprint_timestamp = std::chrono::steady_clock::now();
+			std::cout << "sprint!" << '\n';
+			newPos.x += 100.0d*direction.x;
+			newPos.y += 100.0d*direction.y;
+			sprint_available = false;
+		} else
+		{
+			if (std::chrono::duration_cast<std::chrono::milliseconds>(current_timestamp - sprint_timestamp).count() >= 3000)
+			{
+				sprint_available = true;
+			}
+		}
 	}
 
 	if (right_mouse_down)
@@ -73,8 +90,7 @@ void Player::update(double deltaTime, bool left_button_down, bool right_button_d
 		direction.y = (float) direction.y / 2.0f;
 	}
 
-	Vector2f newPos;
-	newPos.x = getPos().x + getDirection().x * getVelocity() * deltaTime;
-	newPos.y = getPos().y + getDirection().y * getVelocity() * deltaTime;
+	newPos.x += getPos().x + getDirection().x * getVelocity() * deltaTime;
+	newPos.y += getPos().y + getDirection().y * getVelocity() * deltaTime;
 	setPos(newPos.x, newPos.y);
 }

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <math.h>
 
 #include "Math.hpp"
 
@@ -10,7 +11,7 @@
 
 void init()
 {
-	if (SDL_Init(SDL_INIT_VIDEO) > 0)
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) > 0)
 		std::cout << "SDL_Init has failed: " << SDL_GetError() << std::endl;
 	if (!(IMG_Init(IMG_INIT_PNG)))
 		std::cout << "IMG_Init failed: "<< SDL_GetError() << std::endl;
@@ -87,12 +88,23 @@ void graphics()
 	window.display();
 }
 
+const int fps = 60;
+const int frameDelay = 1000/fps;
+
+Uint32 frameStart;
+int frameTime;
+
 int main(int argc, char* args[ ])
 {
 	while (gameRunning)
-	{
+	{	
+		frameStart = SDL_GetTicks();
 		update();
 		graphics();
+		frameTime = SDL_GetTicks() - frameStart;
+
+		//Cap to 60 fps
+		if (frameDelay > frameTime) SDL_Delay(frameDelay - frameTime);
 	}
 
 	window.cleanUp();
