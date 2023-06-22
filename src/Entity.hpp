@@ -18,7 +18,7 @@ public:
 	SDL_Texture* getTex();
 	SDL_Rect getCurrentFrame();
 	float getScale();
-private:
+protected:
 	Vector2f pos;
 	double angle;
 	SDL_Rect currentFrame;

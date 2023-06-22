@@ -2,12 +2,13 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <math.h>
+#include <vector>
 
 #include "Math.hpp"
-
 #include "RenderWindow.hpp"
 #include "Entity.hpp"
 #include "Player.hpp"
+#include "Enemy.hpp"
 
 void init()
 {
@@ -17,6 +18,7 @@ void init()
 		std::cout << "IMG_Init failed: "<< SDL_GetError() << std::endl;
 }
 
+//Game Settings
 RenderWindow window("GAME", 1280, 720);
 bool gameRunning = true;
 
@@ -27,10 +29,15 @@ double deltaTime = 0;
 SDL_Event event;
 
 //Load textures
-SDL_Texture* playerTexture = window.loadTexture("res/gfx/player.png");
+SDL_Texture* playerTexture = window.loadTexture("res/gfx/Player.png");
 SDL_Texture* bgTexture = window.loadTexture("res/gfx/bgTexture.png");
+SDL_Texture* enemyTexture = window.loadTexture("res/gfx/Enemy.png");
 
+//Entities
 Player player(Vector2f(500,300), playerTexture, 2, 0.5f);
+//enemy vector
+std::vector<class Enemy*> enemies;
+//enemies
 
 void update()
 {
@@ -77,6 +84,17 @@ void update()
 	}
 
 	player.update(deltaTime, left_button_down, right_button_down, up_button_down, down_button_down, left_mouse_down, right_mouse_down, player_to_mouse);
+	
+	for (long long unsigned int i=0; i<enemies.size(); i++)
+	{
+		Vector2f enemy_to_player;
+		//if (i=4) std::cout << enemies[i]->getPos().x  << ',' << enemies[i]->getPos().y << '\n';
+		enemy_to_player.x = player.getPos().x - enemies[i]->getPos().x;
+		enemy_to_player.y = player.getPos().y - enemies[i]->getPos().y;
+		//if (i=4) std::cout << enemy_to_player.x  << ',' << enemy_to_player.y << '\n';
+		enemies[i]->update(deltaTime, enemy_to_player, false);
+		//std::cout << enemy_to_player.x << ',' << enemy_to_player.y << '\n';
+	}
 }
 
 void graphics()
@@ -85,6 +103,11 @@ void graphics()
 	window.render(0, 0, bgTexture);
 	
 	window.render(player);
+	for( long long unsigned int i=0;i<enemies.size();i++ )
+	{
+		window.render(enemies[i]);
+	}
+
 	window.display();
 }
 
@@ -96,6 +119,14 @@ int frameTime;
 
 int main(int argc, char* args[ ])
 {
+	for (int i=0; i<1; i++)
+	{
+		Vector2f p_pos;
+		p_pos.x = 100+100*i;
+		p_pos.y = 200;
+		Enemy* enemy = new Enemy(p_pos, enemyTexture, 2, 0.3f);
+		enemies.emplace_back(enemy);
+	}
 	while (gameRunning)
 	{	
 		frameStart = SDL_GetTicks();

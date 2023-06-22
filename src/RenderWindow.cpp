@@ -54,6 +54,27 @@ void RenderWindow::render(Entity& p_entity)
 	//SDL_RenderCopyEx(renderer, p_entity.getTex(), &src, &dst, 0, NULL, flip);
 }
 
+void RenderWindow::render(Entity* p_entity)
+{
+	SDL_Rect src; 
+
+	src.x = p_entity->getCurrentFrame().x;
+	src.y = p_entity->getCurrentFrame().y;
+	src.w = p_entity->getCurrentFrame().w;
+	src.h = p_entity->getCurrentFrame().h;
+
+	SDL_Rect dst;
+	dst.x = p_entity->getPos().x;
+	dst.y = p_entity->getPos().y;
+	dst.w = p_entity->getCurrentFrame().w * p_entity->getScale();
+	dst.h = p_entity->getCurrentFrame().h * p_entity->getScale();
+
+	SDL_RendererFlip flip = SDL_FLIP_NONE;
+
+	SDL_RenderCopyEx(renderer, p_entity->getTex(), &src, &dst, p_entity->getAngle(), NULL, flip);
+	//SDL_RenderCopyEx(renderer, p_entity.getTex(), &src, &dst, 0, NULL, flip);
+}
+
 void RenderWindow::render(int p_x, int p_y, SDL_Texture* p_tex)
 {	
     SDL_Point size;
