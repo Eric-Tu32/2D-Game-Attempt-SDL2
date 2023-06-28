@@ -1,6 +1,6 @@
 # 2D-Game-Attempt-SDL2
 
---
+---
 
 ## 1. Project Description
 Building a 2d game with C++ and SDL2
