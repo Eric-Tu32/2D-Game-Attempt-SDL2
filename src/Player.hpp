@@ -14,7 +14,7 @@ public:
 	void setVelocity(float v);
 	Vector2f getDirection();
 	void setDirection(float x, float y);
-	void update(double deltaTime, bool left_button_down, bool right_button_down, bool up_button_down, bool down_button_down, bool left_mouse_down, bool right_mouse_down, Vector2f player_to_mouse);
+	int update(double deltaTime, bool left_button_down, bool right_button_down, bool up_button_down, bool down_button_down, bool left_mouse_down, bool right_mouse_down, Vector2f player_to_mouse, bool playerHit);
 	
 private:
 	float velocity;

@@ -35,8 +35,10 @@ void Player::setDirection(float x, float y)
 	direction.y = y;
 }
 
-void Player::update(double deltaTime, bool left_button_down, bool right_button_down, bool up_button_down, bool down_button_down, bool left_mouse_down, bool right_mouse_down, Vector2f player_to_mouse)
+int Player::update(double deltaTime, bool left_button_down, bool right_button_down, bool up_button_down, bool down_button_down, bool left_mouse_down, bool right_mouse_down, Vector2f player_to_mouse, bool playerHit)
 {
+	if(playerHit) return 2;
+
 	direction.x = 0;
 	direction.y = 0;
 	setAngle((atan2(player_to_mouse.x ,-player_to_mouse.y) * 180.0d) / 3.1416d);
@@ -93,4 +95,6 @@ void Player::update(double deltaTime, bool left_button_down, bool right_button_d
 	newPos.x += getPos().x + getDirection().x * getVelocity() * deltaTime;
 	newPos.y += getPos().y + getDirection().y * getVelocity() * deltaTime;
 	setPos(newPos.x, newPos.y);
+
+	return 1;
 }
